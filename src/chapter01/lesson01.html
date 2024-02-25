@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Babylon Lesson01</title>
+
+    <style>
+		html, body {
+			overflow: hidden;
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+		}
+
+		#renderCanvas {
+			width: 100%;
+			height: 100%;
+			touch-action: none;
+		}
+    </style>
+
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+</head>
+<body>
+<canvas id="renderCanvas" touch-action="none"></canvas>
+
+<script>
+    /**
+     * Scene（场景）：可以看作一个舞台，可以放置灯光、相机
+     * Cameras（相机）：以什么样的角度观察模型（可以理解为我们的眼睛）
+     * Lights（灯光）：用来照亮模型
+     *      HemisphericLight：半球光，模拟环境光。由方向参数定义，参照点为三维的中心点(0, 0, 0)
+     *          设置为：(1, 1, 0)，即 X 轴 为 1，Y 轴为 1，Z 轴为 0，光源在 "左上角" 发射光线
+     *      PointLight：点光，被定义为三维世界中一个唯一的点，然后向各个方向发射光线（如：电灯泡）；
+     * Mesh（网格）：三维空间
+     * /
+
+
+    /* 获取 canvas 对象 */
+    const canvas = document.getElementById('renderCanvas');
+
+    /* 新建引擎 */
+    const engine = new BABYLON.Engine(canvas, true);
+
+    /* 创建场景 */
+    const createScene = () => {
+        const scene = new BABYLON.Scene(engine);
+
+        /* 添加一个相机，并绑定鼠标事件 */
+        const camera = new BABYLON.ArcRotateCamera('Camera', Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0,0,5), scene);
+        camera.attachControl(canvas, true);
+
+        /* 添加一组灯光到场景 */
+        const light1 = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(1, 1, 0), scene);
+        const light2 = new BABYLON.PointLight('light2', new BABYLON.Vector3(0, 1, -1), scene);
+
+        /* 添加一个球体到场景中 */
+        const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', {diameter:2}, scene);
+
+        return scene;
+    };
+
+    /* 创建场景 */
+    const scene = createScene();
+
+    /* 渲染 3d 场景 */
+    engine.runRenderLoop(function () {
+        scene.render();
+    });
+
+    const onResize = () => { engine.resize(); };
+
+    /* 自适应窗口大小 */
+    window.addEventListener('resize', onResize);
+</script>
+</body>
+</html>

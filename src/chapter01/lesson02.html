@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Babylon Lesson01</title>
+
+    <style>
+		html, body {
+			overflow: hidden;
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+		}
+
+		#renderCanvas {
+			width: 100%;
+			height: 100%;
+			touch-action: none;
+		}
+    </style>
+
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+</head>
+<body>
+<canvas id="renderCanvas" touch-action="none"></canvas>
+
+<script>
+    /* 获取 canvas 对象 */
+    const canvas = document.getElementById('renderCanvas');
+
+    /* 新建引擎 */
+    const engine = new BABYLON.Engine(canvas, true);
+
+    const createScene = function () {
+        /* 创建场景对象 */
+        const scene = new BABYLON.Scene(engine);
+
+        /* 创建相机，并设置放置位置 */
+        const camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5, -10), scene);
+
+        /* 将相机对准场景 */
+        camera.setTarget(BABYLON.Vector3.Zero());
+
+        /* 相机放置在画布上 */
+        camera.attachControl(canvas, false);
+
+        /* 创建光源，朝向 (0, 1, 0)：意味着，朝向天空 */
+        const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene);
+
+        /* 使用 SphereBuilder 创建一个内置的“球体”形状 */
+        const sphere = BABYLON.MeshBuilder.CreateSphere('sphere1', {
+            segments: 16,
+            diameter: 2,
+            sideOrientation: BABYLON.Mesh.FRONTSIDE,
+        }, scene);
+
+        /* 将球体向上移动其高度的1/2 */
+        sphere.position.y = 1;
+
+        /* 创建一个内置的“地面”形状。 */
+        const ground = BABYLON.MeshBuilder.CreateGround("ground1", {
+            width: 6,
+            height: 6,
+            subdivisions: 2,
+            updatable: false
+        }, scene);
+
+        camera.attachControl(canvas, true);
+
+        /* 返回场景 */
+        return scene;
+    }
+
+    /* 创建场景 */
+    const scene = createScene();
+
+    /* 渲染 3d 场景 */
+    engine.runRenderLoop(function () {
+        scene.render();
+    });
+
+    const onResize = () => { engine.resize(); };
+
+    /* 自适应窗口大小 */
+    window.addEventListener('resize', onResize);
+</script>
+</body>
+</html>
